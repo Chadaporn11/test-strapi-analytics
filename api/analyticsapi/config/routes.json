@@ -1,0 +1,60 @@
+{
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/analyticsapis",
+      "handler": "analyticsapi.find",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/analyticsapis/token",
+      "handler": "analyticsapi.token",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/analyticsapis/count",
+      "handler": "analyticsapi.count",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/analyticsapis/:id",
+      "handler": "analyticsapi.findOne",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/analyticsapis",
+      "handler": "analyticsapi.create",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "PUT",
+      "path": "/analyticsapis/:id",
+      "handler": "analyticsapi.update",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "DELETE",
+      "path": "/analyticsapis/:id",
+      "handler": "analyticsapi.delete",
+      "config": {
+        "policies": []
+      }
+    }
+  ]
+}
