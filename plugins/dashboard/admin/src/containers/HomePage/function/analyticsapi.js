@@ -57,6 +57,39 @@ export const getAnalyticsTotal = async () => {
             }
         ]
     }
+    console.log("data1::", data);
+
+    const requestOptions = {
+        method: "POST",
+        headers: { Authorization: `Bearer ${analyticstoken.access_token}`, "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+
+    };
+    const result = await fetch(`https://analyticsdata.googleapis.com/v1beta/properties/${VIEW_IDV4}:runReport?key=${API_KEYV4}`, requestOptions)
+        .then((response) => response.json())
+        .then((res) => {
+            return res
+        });
+    return result
+
+}
+
+export const getTotal = async (startDate, endDate) => {
+    const analyticstoken = await AuthGoogle()
+    let data = {
+        "metrics": [
+            {
+                "name": "newUsers"
+            }
+        ],
+        "dateRanges": [
+            {
+                "startDate": startDate,
+                "endDate": endDate
+            }
+        ]
+    }
+    console.log("data2::", data);
     const requestOptions = {
         method: "POST",
         headers: { Authorization: `Bearer ${analyticstoken.access_token}`, "Content-Type": "application/json" },

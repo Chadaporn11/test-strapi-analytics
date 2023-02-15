@@ -175,3 +175,32 @@
     width: 100%;
     /* height: 180px; */
 }
+
+.button-cancel{
+    width: auto;
+    border-radius: 12%;
+    background-color: #d6d3d1;
+    color: white;
+}
+.button-search{
+    width: auto;
+    border-radius: 12%;
+    background-color: #ef4444;
+    color: white;
+
+}
+
+.button-cancel:hover :active {
+    width: auto;
+    border-radius: 12%;
+    background-color: #d6d3d1;
+    color: white;
+}
+
+.button-search:hover{
+    width: auto;
+    border-radius: 12%;
+    background-color: #ef4444;
+    color: white;
+
+}
