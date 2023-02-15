@@ -20,14 +20,14 @@ import './index.css';
 // import { Pie } from "react-chartjs-2";
 import ApexCharts from 'apexcharts'
 import { Card, DatePicker, TimePicker, Space, Select, Form, Button } from 'antd';
-import { TeamOutlined } from '@ant-design/icons';
+import { TeamOutlined, ClockCircleOutlined } from '@ant-design/icons';
 const { Option } = Select;
 const PickerWithType = ({ type, onChange }) => {
   // if (type === 'time') return <TimePicker onChange={onChange} />;
   if (type === 'date') return <DatePicker onChange={onChange} />;
   return <DatePicker picker={type} onChange={onChange} />;
 };
-import { getAnalyticsRealTime, getAnalyticsTotal } from './function/analyticsapi'
+import { getAnalyticsRealTime, getAnalyticsTotal, getTotal } from './function/analyticsapi'
 
 
 
@@ -40,6 +40,10 @@ const HomePage = () => {
   // const [token, setToken] = useState('')
   const [countUser, setCountUser] = useState(0)
   const [totalUser, setTotalUser] = useState(0)
+  const [startDate, setStartDate] = useState('')
+  const [endDate, setEndDate] = useState('')
+
+
 
 
   //API//
@@ -100,11 +104,6 @@ const HomePage = () => {
   //   }
 
   // }
-
-  setInterval(() => {
-    loadData()
-
-  }, 20000)
   // console.log('CountUser::', countUser)
 
   //API//
@@ -132,291 +131,15 @@ const HomePage = () => {
       },
       series: [{
         name: 'sales',
-        data: [30, 40, 45, 50, 49, 60, 70, 91, 125]
+        data: [30, 40, 45, 50, 49, 60, 70, 91, 125, 105, 95, 75]
       }],
       xaxis: {
-        categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999]
+        categories: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
       }
     }
 
     var chart = new ApexCharts(document.querySelector("#chart"), options);
     chart.render();
-
-    ////////////////////
-    // var options02 = {
-    //   chart: {
-    //     height: '350px',
-    //     type: "bar",
-    //     stacked: false
-    //   },
-    //   dataLabels: {
-    //     enabled: false
-    //   },
-    //   colors: ["#FF1654", "#247BA0"],
-    //   series: [
-    //     {
-    //       name: "Series A",
-    //       data: [1.4, 2, 2.5, 1.5, 2.5, 2.8, 3.8, 4.6]
-    //     },
-    //     {
-    //       name: "Series B",
-    //       data: [20, 29, 37, 36, 44, 45, 50, 58]
-    //     }
-    //   ],
-    //   stroke: {
-    //     width: [4, 4]
-    //   },
-    //   plotOptions: {
-    //     bar: {
-    //       columnWidth: "20%"
-    //     }
-    //   },
-    //   xaxis: {
-    //     categories: [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016]
-    //   },
-    //   yaxis: [
-    //     {
-    //       axisTicks: {
-    //         show: true
-    //       },
-    //       axisBorder: {
-    //         show: true,
-    //         color: "#FF1654"
-    //       },
-    //       labels: {
-    //         style: {
-    //           colors: "#FF1654"
-    //         }
-    //       },
-    //       title: {
-    //         text: "Series A",
-    //         style: {
-    //           color: "#FF1654"
-    //         }
-    //       }
-    //     },
-    //     {
-    //       opposite: true,
-    //       axisTicks: {
-    //         show: true
-    //       },
-    //       axisBorder: {
-    //         show: true,
-    //         color: "#247BA0"
-    //       },
-    //       labels: {
-    //         style: {
-    //           colors: "#247BA0"
-    //         }
-    //       },
-    //       title: {
-    //         text: "Series B",
-    //         style: {
-    //           color: "#247BA0"
-    //         }
-    //       }
-    //     }
-    //   ],
-    //   tooltip: {
-    //     shared: false,
-    //     intersect: true,
-    //     x: {
-    //       show: false
-    //     }
-    //   },
-    //   legend: {
-    //     horizontalAlign: "left",
-    //     offsetX: 40
-    //   }
-    // };
-
-    // var chart02 = new ApexCharts(document.querySelector("#chart02"), options02);
-    // var optionspie = {
-    //   chart: {
-    //     width: '250px',
-    //     type: "donut"
-    //   },
-    //   dataLabels: {
-    //     enabled: false
-    //   },
-    //   series: [44, 55, 13, 33]
-    // };
-    // var chartpie = new ApexCharts(document.querySelector('#chartpie'), optionspie);
-    // ///////////////////////////
-    // var options1 = {
-    //   series: [44, 55, 13, 43, 5, 15, 7, 26, 45, 10, 15, 12],
-    //   colors: ['#ffb822', '#249EFA', '#1dc9b7', '#fd397a', '#5578eb', '#ffb822', '#249EFA', '#1dc9b7', '#fd397a', '#5578eb', '#ffb822', '#249EFA'],
-    //   chart: {
-    //     type: 'donut',
-    //     width: '190px'
-    //   },
-    //   dataLabels: {
-    //     enabled: false
-    //   },
-    //   labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-    //   legend: {
-    //     show: false,
-    //   },
-    //   fill: {
-    //     type: 'gradient',
-    //   },
-    //   responsive: [{
-    //     breakpoint: '210px',
-    //     options: {
-    //       chart: {
-    //         width: '190px'
-    //       },
-    //       legend: {
-    //         position: 'bottom'
-    //       }
-    //     }
-    //   }],
-    //   tooltip: {
-    //     custom: function ({ series, seriesIndex, dataPointIndex, w }) {
-    //       return (
-    //         '<div class="arrow_box">' +
-    //         // '<img style="margin: 10px" width="20" height="20" src="https://cdn.pixabay.com/photo/2020/12/29/10/07/coast-5870088_960_720.jpg">' +
-    //         "<span>" +
-    //         w.globals.labels[seriesIndex] +
-    //         ": " +
-    //         series[seriesIndex] +
-    //         "</span>" +
-    //         "</div>"
-    //       );
-    //     }
-    //   },
-    //   plotOptions: {
-    //     pie: {
-    //       expandOnClick: false,
-    //       donut: {
-    //         labels: {
-    //           show: true,
-    //           name: {
-    //             show: true,
-    //             fontSize: '22px',
-    //             offsetY: -5
-    //           },
-    //           value: {
-    //             show: true,
-    //             fontSize: '16px',
-    //             color: undefined,
-    //             offsetY: +5,
-    //             formatter: function (val) {
-    //               return val
-    //             }
-    //           },
-    //           total: {
-    //             show: true,
-    //             label: 'Total',
-    //             color: '#ffa500',
-    //             formatter: function (w) {
-    //               return w.globals.seriesTotals.reduce((a, b) => {
-    //                 return a + b
-    //               }, 0)
-    //             }
-    //           }
-    //         }
-    //       }
-    //     }
-    //   }
-    // };
-
-    // var chart1 = new ApexCharts(document.querySelector("#chart1"), options1);
-    // ////////////////////////////////////////////////////////////////////////////
-    // var options03 = {
-    //   chart: {
-    //     height: '350px',
-    //     type: "line",
-    //     stacked: false
-    //   },
-    //   dataLabels: {
-    //     enabled: false
-    //   },
-    //   colors: ["#FF1654", "#247BA0"],
-    //   series: [
-    //     {
-    //       name: "Series A",
-    //       data: [1.4, 2, 2.5, 1.5, 2.5, 2.8, 3.8, 4.6]
-    //     },
-    //     {
-    //       name: "Series B",
-    //       data: [20, 29, 37, 36, 44, 45, 50, 58]
-    //     }
-    //   ],
-    //   stroke: {
-    //     width: [4, 4]
-    //   },
-    //   plotOptions: {
-    //     bar: {
-    //       columnWidth: "20%"
-    //     }
-    //   },
-    //   xaxis: {
-    //     categories: [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016]
-    //   },
-    //   yaxis: [
-    //     {
-    //       axisTicks: {
-    //         show: true
-    //       },
-    //       axisBorder: {
-    //         show: true,
-    //         color: "#FF1654"
-    //       },
-    //       labels: {
-    //         style: {
-    //           colors: "#FF1654"
-    //         }
-    //       },
-    //       title: {
-    //         text: "Series A",
-    //         style: {
-    //           color: "#FF1654"
-    //         }
-    //       }
-    //     },
-    //     {
-    //       opposite: true,
-    //       axisTicks: {
-    //         show: true
-    //       },
-    //       axisBorder: {
-    //         show: true,
-    //         color: "#247BA0"
-    //       },
-    //       labels: {
-    //         style: {
-    //           colors: "#247BA0"
-    //         }
-    //       },
-    //       title: {
-    //         text: "Series B",
-    //         style: {
-    //           color: "#247BA0"
-    //         }
-    //       }
-    //     }
-    //   ],
-    //   tooltip: {
-    //     shared: false,
-    //     intersect: true,
-    //     x: {
-    //       show: false
-    //     }
-    //   },
-    //   legend: {
-    //     horizontalAlign: "left",
-    //     offsetX: 40
-    //   }
-    // };
-
-    // var chart03 = new ApexCharts(document.querySelector("#chart03"), options03);
-    // chart1.render();
-    // chartpie.render();
-    // chart02.render();
-    // chart03.render();
-
-
   }
   const loadData = () => {
     getAnalyticsRealTime().then((res) => {
@@ -427,6 +150,8 @@ const HomePage = () => {
         setCountUser(0)
       }
     })
+  }
+  const getDataAnalyticsTotals = () => {
     getAnalyticsTotal().then((res) => {
       const ans = Object.keys(res).find(key => key === 'rows') ? true : false;
       if (ans) {
@@ -435,26 +160,59 @@ const HomePage = () => {
         setTotalUser(0)
       }
     })
+
   }
 
+
+  setInterval(() => {
+    loadData()
+
+  }, 50000)
 
   useEffect(() => {
     loadDataChart()
     loadData()
-
+    getDataAnalyticsTotals()
 
   }, [])
   const onFinish = (values) => {
-    console.log('onFinish', values)
-    // let startDate = values.date?.[0]
-    //   ? dayjs(values.date[0]).format("YYYY-MM-DD")
-    //   : undefined
+    // console.log('onFinish', `${new Date(values.date[0]).toISOString().substring(0, 10)}`)
+    // let startDate = new Date(values.date[0]).toISOString().substring(0, 10)
+    // let endDate = new Date(values.date[1]).toISOString().substring(0, 10)
+    let Datechoose = values.date.format('YYYY-MM')
+    // let endDatechoose = values.date[1].format('YYYY-MM')
+    const date = new Date();
+    let day = date.getDate();
+    const month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];
+    let startDatechoose = `${Datechoose}-01`
+    let endDatechoose = `${Datechoose}-${day}`
+    // let name = month[new Date(Datechoose).getMonth()]
+    // let year = new Date(Datechoose).getFullYear().toString()
+    // console.log('Date::', name, year)
 
-    // let endDate = values.date?.[1]
-    //   ? dayjs(values.date[1]).format("YYYY-MM-DD")
-    //   : undefined
+    // let month = values.date.getMonth() + 1;
+    // let year = values.date.getFullYear();
+    setStartDate(`${month[new Date(Datechoose).getMonth()]} ${new Date(Datechoose).getFullYear().toString()}`)
+    setEndDate(endDatechoose)
+    getTotal(startDatechoose, endDatechoose).then((res) => {
+      const ans = Object.keys(res).find(key => key === 'rows') ? true : false;
+      if (ans) {
+        setTotalUser(res.rows[0].metricValues[0].value)
+        setStatusSelect(true)
 
-    // console.log('Test:;', startDate, endDate)
+      } else {
+        setTotalUser(0)
+        setStatusSelect(true)
+
+      }
+    })
+  };
+  const disabledDate = (current) => {
+    // Can not select days before today and today
+    const day = new Date()
+    day.setDate(day.getDate() - 1)
+
+    return current && current > day
   };
 
   return (
@@ -473,43 +231,65 @@ const HomePage = () => {
               span: 16,
             }}
             style={{
-              maxWidth: 600,
+              maxWidth: 1000,
             }}
             initialValues={{
               remember: true,
             }}
+            layout='inline'
             form={form}
             onFinish={onFinish}>
             <Form.Item
               className="font-bold"
-              label="วันที่เริ่ม-สิ้นสุด"
+              label="Filter :"
               name="date"
             >
-              <DatePicker.RangePicker
-                className="w-full rounded"
-                placeholder={["วันที่เริ่ม", "สิ้นสุด"]}
+              <DatePicker
+                picker="month"
+                disabledDate={disabledDate}
+                style={{
+                  borderRadius: "5px",
+                }}
+                placeholder={["Month and Year"]}
               />
             </Form.Item>
+
             <Form.Item className="">
               <Button
                 type="text"
-                className=" w-full rounded bg-gray text-white hover:bg-red-300"
+                // className='button-search'
+                // danger
+                // className=" w-full rounded bg-danger text-white hover:bg-red-300"
+                style={{
+                  borderRadius: "10px",
+                  backgroundColor: "#0ea5e9",
+                  color: "white"
+                }}
                 onClick={() => {
-                  form.resetFields();
+                  form.submit();
                 }}
               >
-                ยกเลิก
+                Search
               </Button>
             </Form.Item>
             <Form.Item className="">
               <Button
                 type="text"
-                className=" w-full rounded bg-danger text-white hover:bg-red-300"
+                style={{
+                  borderRadius: "10px",
+                  backgroundColor: "#ef4444",
+                  color: "white"
+                }}
+                // className='button-cancel'
+                // className=" w-full rounded bg-gray text-white hover:bg-gray-300"
                 onClick={() => {
-                  form.submit();
+                  form.resetFields();
+                  getDataAnalyticsTotals()
+                  setStatusSelect(false)
+
                 }}
               >
-                ค้นหา
+                Cancel
               </Button>
             </Form.Item>
           </Form>
@@ -528,8 +308,8 @@ const HomePage = () => {
         <div className='col-graph'>
           <Card
             style={{
-              width: '500px',
-              height: '200px',
+              width: '320px',
+              height: '210px',
               margin: 0,
               padding: 0,
               backgroundColor: '#415994',
@@ -537,11 +317,23 @@ const HomePage = () => {
             }}
           >
             <div className='content'>
-              <p style={{
-                color: 'white',
-                marginBottom: '30px',
-              }}>จำนวนผู้เข้าชมเว็บไซต์
-              </p>
+              <div style={{ display: 'flex' }}>
+                <p style={{
+                  fontSize: '18px',
+                  fontWeight: 'bold',
+                  color: 'white',
+                  marginRight: '10px',
+                }}>Visitors
+                </p>
+                <p style={{
+                  fontSize: '12px',
+                  color: 'white',
+                  marginTop: '3px',
+                  marginBottom: '30px',
+                }}>( In the last 30 minutes )
+                </p>
+              </div>
+
               <div className='incontent' >
                 <TeamOutlined style={{ fontSize: '60px', color: 'white' }} />
                 <h1 style={{
@@ -549,19 +341,22 @@ const HomePage = () => {
                 }}>{countUser}</h1>
                 <p style={{
                   color: 'white',
-                }}>คน</p>
+                }}></p>
+                {/* <p style={{
+                  color: 'white',
+                }}>คน</p> */}
               </div>
               <p style={{
                 color: 'white',
                 marginTop: '25px',
-              }} >ตอนนี้</p>
+              }} >Visitors per minute</p>
             </div>
 
           </Card>
           <Card
             style={{
-              width: '500px',
-              height: '200px',
+              width: '320px',
+              height: '210px',
               margin: 0,
               padding: 0,
               backgroundColor: '#415994',
@@ -570,9 +365,11 @@ const HomePage = () => {
           >
             <div className='content'>
               <p style={{
+                fontSize: '18px',
+                fontWeight: 'bold',
                 color: 'white',
                 marginBottom: '30px',
-              }}>จำนวนผู้เข้าชมเว็บไซต์
+              }}>Visitors
               </p>
               <div className='incontent' >
                 <TeamOutlined style={{ fontSize: '60px', color: 'white' }} />
@@ -581,14 +378,54 @@ const HomePage = () => {
                 }}>{totalUser}</h1>
                 <p style={{
                   color: 'white',
-                }}>คน</p>
+                }}></p>
+                {/* <p style={{
+                  color: 'white',
+                }}>คน</p> */}
               </div>
               <p style={{
                 color: 'white',
                 marginTop: '25px',
               }} >
-                {statusSelect && ({ dataSelect })}
-                {!statusSelect && ('เดือนปัจจุบัน')}
+                {statusSelect && (`${startDate}`)}
+                {!statusSelect && ('Current year & month')}
+              </p>
+            </div>
+
+          </Card>
+          <Card
+            style={{
+              width: '320px',
+              height: '210px',
+              margin: 0,
+              padding: 0,
+              backgroundColor: '#415994',
+              alignContent: 'center',
+            }}
+          >
+            <div className='content'>
+              <p style={{
+                fontSize: '18px',
+                fontWeight: 'bold',
+                color: 'white',
+                marginBottom: '30px',
+              }}>Session
+              </p>
+              <div className='incontent' >
+                <ClockCircleOutlined style={{ fontSize: '60px', color: 'white' }} />
+                <h1 style={{
+                  color: 'white',
+                }}>{totalUser}</h1>
+                <p style={{
+                  color: 'white',
+                }}></p>
+              </div>
+              <p style={{
+                color: 'white',
+                marginTop: '25px',
+              }} >
+                {statusSelect && (`${startDate}`)}
+                {!statusSelect && ('Current year & month')}
               </p>
             </div>
 
@@ -617,10 +454,6 @@ const HomePage = () => {
         <div className='col-graph'>
           <div className='graph-bar02'>
             <Space direction="horizontal" style={{ justifyContent: 'end', marginTop: '60px', marginRight: '60px', marginBottom: '30px' }}>
-              {/* <DatePicker onChange={onChange} />
-              <DatePicker onChange={onChange} picker="week" />
-              <DatePicker onChange={onChange} picker="month" />
-              <DatePicker onChange={onChange} picker="year" /> */}
               <Select value={type} onChange={setType}>
                 <Option value="date">Date</Option>
                 <Option value="week">Week</Option>
@@ -641,72 +474,9 @@ const HomePage = () => {
 
         </div>
       </div >
-      {/* <h1>HomePage</h1>
-      <p>Happy coding</p> */}
     </div >
   );
 };
 
 export default memo(HomePage);
-
-{/* <div className='Main'>
-  <div className='Header'>
-    <h1 className='Header-titile'>Dashboard</h1>
-  </div>
-  <div className='container'>
-    <div className='col-graph'>
-      <div className='graph-data'>
-        <h1>25</h1>
-        <p>จำนวนผู้เข้าชมเว็บไซต์ ณ เวลาปัจจุบัน</p>
-      </div>
-      <div className='graph-data'>
-        <h1>300</h1>
-        <p>จำนวนผู้เข้าชมเว็บไซต์ ณ เดือนปัจจุบัน</p>
-      </div>
-      <div className='graph-data'>
-        <h1>95</h1>
-        <p>จำนวนผู้เข้าชมเว็บไซต์วัน...</p>
-      </div>
-      <div className='graph-data'>
-        <div id="chart1"></div>
-      </div>
-    </div>
-    <div className='col-graph'>
-      <div className='graph-bar'>
-        <div id="chart02"></div>
-      </div>
-      <div className='graph-bar'>
-        <div id="chart03"></div>
-      </div>
-    </div>
-    <div className='col-graph'>
-      <div className='graph-bar02'>
-        <div id="chart"></div>
-
-      </div>
-    </div>
-  </div>
-</div > */}
-
-//=========start============//
-/*
- *
- * HomePage
- *
- */
-
-// import React, { memo } from 'react';
-// // import PropTypes from 'prop-types';
-// import pluginId from '../../pluginId';
-
-// const HomePage = () => {
-//   return (
-//     <div>
-//       <h1>{pluginId}&apos;s HomePage</h1>
-//       <p>Happy coding</p>
-//     </div>
-//   );
-// };
-
-// export default memo(HomePage);
 
