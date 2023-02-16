@@ -48,6 +48,9 @@ export const getAnalyticsTotal = async () => {
         "metrics": [
             {
                 "name": "totalUsers"
+            },
+            {
+                "name": "sessions"
             }
         ],
         "dateRanges": [
@@ -80,7 +83,11 @@ export const getTotal = async (startDate, endDate) => {
         "metrics": [
             {
                 "name": "newUsers"
+            },
+            {
+                "name": "sessions"
             }
+
         ],
         "dateRanges": [
             {
@@ -89,7 +96,6 @@ export const getTotal = async (startDate, endDate) => {
             }
         ]
     }
-    console.log("data2::", data);
     const requestOptions = {
         method: "POST",
         headers: { Authorization: `Bearer ${analyticstoken.access_token}`, "Content-Type": "application/json" },
@@ -104,4 +110,173 @@ export const getTotal = async (startDate, endDate) => {
     return result
 
 }
+
+// const getDataChart = async () => {
+//     let quarter01 = await fetch(`https://analyticsdata.googleapis.com/v1beta/properties/${VIEW_IDV4}:runReport?key=${API_KEYV4}`, requestOptions)
+
+//     const results = Promise.all([quarter01, quarter01, quarter01, quarter01])
+// }
+export const getDataChart = async (year) => {
+    let data1 = {
+        "metrics": [
+            {
+                "name": "totalUsers"
+            },
+            {
+                "name": "newUsers"
+            }
+        ],
+        "dateRanges": [
+            {
+                "name": "JAN",
+                "startDate": `${year}-02-01`,
+                "endDate": `${year}-02-07`
+            },
+            {
+                "name": "FEB",
+                "startDate": `${year}-02-07`,
+                "endDate": `${year}-02-08`
+            },
+            {
+                "name": "MAR",
+                "startDate": `${year}-02-08`,
+                "endDate": `${year}-02-09`
+            },
+        ]
+    }
+    let data2 = {
+        "metrics": [
+            {
+                "name": "totalUsers"
+            },
+            {
+                "name": "newUsers"
+            }
+        ],
+        "dateRanges": [
+            {
+                "name": "APR",
+                "startDate": `${year}-02-10`,
+                "endDate": `${year}-02-11`
+            },
+            {
+                "name": "MAY",
+                "startDate": `${year}-02-11`,
+                "endDate": `${year}-02-12`
+            },
+            {
+                "name": "JUN",
+                "startDate": `${year}-02-12`,
+                "endDate": `${year}-02-13`
+            },
+        ]
+    }
+    let data3 = {
+        "metrics": [
+            {
+                "name": "totalUsers"
+            },
+            {
+                "name": "newUsers"
+            }
+        ],
+        "dateRanges": [
+            {
+                "name": "JUL",
+                "startDate": `${year}-02-01`,
+                "endDate": `${year}-02-07`
+            },
+            {
+                "name": "AUG",
+                "startDate": `${year}-02-07`,
+                "endDate": `${year}-02-08`
+            },
+            {
+                "name": "SEPT",
+                "startDate": `${year}-02-08`,
+                "endDate": `${year}-02-09`
+            },
+        ]
+    }
+    let data4 = {
+        "metrics": [
+            {
+                "name": "totalUsers"
+            },
+            {
+                "name": "newUsers"
+            }
+        ],
+        "dateRanges": [
+            {
+                "name": "OCT",
+                "startDate": `${year}-02-10`,
+                "endDate": `${year}-02-11`
+            },
+            {
+                "name": "NOV",
+                "startDate": `${year}-02-11`,
+                "endDate": `${year}-02-12`
+            },
+            {
+                "name": "DEC",
+                "startDate": `${year}-02-12`,
+                "endDate": `${year}-02-13`
+            },
+        ]
+    }
+    const analyticstoken = await AuthGoogle()
+    const requestOptions1 = {
+        method: "POST",
+        headers: { Authorization: `Bearer ${analyticstoken.access_token}`, "Content-Type": "application/json" },
+        body: JSON.stringify(data1),
+
+    };
+    const requestOptions2 = {
+        method: "POST",
+        headers: { Authorization: `Bearer ${analyticstoken.access_token}`, "Content-Type": "application/json" },
+        body: JSON.stringify(data2),
+
+    };
+    const requestOptions3 = {
+        method: "POST",
+        headers: { Authorization: `Bearer ${analyticstoken.access_token}`, "Content-Type": "application/json" },
+        body: JSON.stringify(data3),
+
+    };
+    const requestOptions4 = {
+        method: "POST",
+        headers: { Authorization: `Bearer ${analyticstoken.access_token}`, "Content-Type": "application/json" },
+        body: JSON.stringify(data4),
+
+    };
+
+    let quarter01 = await fetch(`https://analyticsdata.googleapis.com/v1beta/properties/${VIEW_IDV4}:runReport?key=${API_KEYV4}`, requestOptions1)
+        .then((response) => response.json())
+        .then((res) => {
+            return res
+        });
+    let quarter02 = await fetch(`https://analyticsdata.googleapis.com/v1beta/properties/${VIEW_IDV4}:runReport?key=${API_KEYV4}`, requestOptions2)
+        .then((response) => response.json())
+        .then((res) => {
+            return res
+        });
+    let quarter03 = await fetch(`https://analyticsdata.googleapis.com/v1beta/properties/${VIEW_IDV4}:runReport?key=${API_KEYV4}`, requestOptions3)
+        .then((response) => response.json())
+        .then((res) => {
+            return res
+        });
+    let quarter04 = await fetch(`https://analyticsdata.googleapis.com/v1beta/properties/${VIEW_IDV4}:runReport?key=${API_KEYV4}`, requestOptions4)
+        .then((response) => response.json())
+        .then((res) => {
+            return res
+        });
+
+
+    const results = Promise.all([quarter01, quarter02, quarter03, quarter04])
+    return results
+
+    // return response
+}
+
 

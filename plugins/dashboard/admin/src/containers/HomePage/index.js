@@ -27,7 +27,7 @@ const PickerWithType = ({ type, onChange }) => {
   if (type === 'date') return <DatePicker onChange={onChange} />;
   return <DatePicker picker={type} onChange={onChange} />;
 };
-import { getAnalyticsRealTime, getAnalyticsTotal, getTotal } from './function/analyticsapi'
+import { getAnalyticsRealTime, getAnalyticsTotal, getTotal, getDataChart } from './function/analyticsapi'
 
 
 
@@ -35,79 +35,18 @@ const HomePage = () => {
 
   const [form] = Form.useForm()
   const [statusSelect, setStatusSelect] = useState(false)
+  const [statusChart, setStatusChart] = useState(false)
+
   const [dataSelect, setDataSelect] = useState('')
   const [type, setType] = useState('date');
   // const [token, setToken] = useState('')
   const [countUser, setCountUser] = useState(0)
   const [totalUser, setTotalUser] = useState(0)
+  const [chartnew, setChartNew] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+  const [charttotal, setChartTotal] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+  const [session, setSession] = useState(0)
   const [startDate, setStartDate] = useState('')
   const [endDate, setEndDate] = useState('')
-
-
-
-
-  //API//
-
-
-  // const AuthGoogle = async () => {
-  //   //Get Data
-  //   // setToken(JSON.parse(sessionStorage.getItem("jwtToken")))
-  //   // const token = JSON.parse(sessionStorage.getItem("jwtToken"))
-  //   const requestOptions = {
-  //     method: "GET",
-  //     headers: { Authorization: `Bearer ${JSON.parse(sessionStorage.getItem("jwtToken"))}`, "Content-Type": "application/json" },
-  //   };
-  //   const analyticstoken = await fetch(`http://localhost:1337/analyticsapis/token`, requestOptions)
-  //     .then((response) => response.json())
-  //     .then((res) => {
-  //       return res
-  //     });
-  //   console.log('Token::', analyticstoken)
-  //   const CLIENT_EMAILV4 = "test-getanalytics4@test-getanalysicv4.iam.gserviceaccount.com"
-  //   const PRIVATE_KEYV4 = "-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDEHaCRAjOIrueA\nIky0as7aTqLkilsdU9fcOzPQeWG5jUzSUoyjVIKCdyib97wJnFmx1q+vc9LRG26N\nIcOEfp/UqVQgL9QYqOy4HkiQA/ru0fWg01MWrbJA28OumI8WojG/0FIzN/7LKJ5p\nFFvYnS4sXnmrnW57PcyaFsLaGu8TdavssNtTll3KwcBbYnXAUEFvqoI9Oi/aQ+JF\nIEjtmcAtcJDwefzZBxe5uzU4RY8glH99eoQvi6JbTaW48WUuOp0bf+tEXx997Erw\nJr6zPMYi/dLOeL6DUEx7p6sGGs4TKh9bVzVm0oQ0324riC3KZpHY9MVO9MQsXr+s\nvqVY7zChAgMBAAECggEAPjBe8FzQVrGP+5Pk2vlbquJwySQOjJg/xTiIz70N/jcO\ne0tuCYUM9a4vlHXUjP+leb1obKy/10tpnRtt0qAMsvUXFjXUfhVjK2d+/xwkAINX\n7q3UlUZzVhnaTY1XIohAWmEHD/LbuzSgNxYboe8F60/yKTd9B1ure9ln5J3R3ktO\nGSXvmW6PagbpyvVkTlyH1TDg9Jz24pRtJ2O8t0M63i5IErwbOPGL5ukmkypPsNL7\nkoZjFUA0RN9682uyfvaiTisHcsG0ug9pV+HIkhvVGmnZTvAIQL64Mr6ghXbsUGzf\n6yXII5L+Pd9/TskOfUAc8iN0nM624Dtz3+3r8qDeOQKBgQDlqybkzMs9WNVvmysZ\no7FqIYqAE0SplWBTzfazKFMKCjzNyZuahb2qysfvAXLHWJfGASO9oySlY52c5hha\nSlSpAfCdQRx+7bMbElpm2nDstrNdJKCiFb3JnwjKic3pxcTlVdTfoOQyAXnYFhK8\nORsGp4z+UQQW4I09/BW0DTpwfwKBgQDambBJ2wyNKNi7QcQeTST8Sc4KUy1hz/i5\nA+zz63a6D99zzyKaiIq6HVQHaUsFiAvx9YcE4j7PxUJnPrlWDHYDaftwoUQP/4F0\nKwU5RidVyTvBQ4k7+mI8ezi3r6AeCL4vgFn22xrEmltY9OjAmSviFWN05jLa4xVt\nvfEOQv/O3wKBgQCEdMowqOAKWIJ4JJCd7+dxYzjCltpBx9HPY3kFaJtDrhXVRZIF\nc16o8tyOPlKZH8IgwyV+yGlpLWOISrf+0uGyu1ivCQ9LMQHb+iDDMvZvvwsBDA/M\niydy8dKbJRDp41KkRXVJKDyTjoBcHJbfkTvCAb3yKn1mSEmNVyaZOgvbNwKBgQDN\nob8caosvClp+JAppeqYtEPxZ6A6LsUhGOnQeq8PemOnZFeN2PLVLCCWwZxLkXCro\na8+b/3uYlPW3C2DqmgQ1h++37muJJQ/QiFt8mgqMfyTP00j3+7uHK16aJAJZ3l2R\nb4qxVUCj6pO9ZXzBGBUYsogBQj5aez0AI6nrgYkDPwKBgQCunPitZtSQHJHaEXMk\nlSMYY4G1SvoSFw/2TJbtUUMtX+YIMGEphbkgFJM/Btk5EvTWSdmmycfJW7F7XJsh\nVapjVOIRywIa+Wf5Z+617fqYKqi/4mJOs99c1FFcDUEt06pbb2XBB5k28LYnlth7\nHwnoQT24B7BGle0Yt1G3oxGzxQ==\n-----END PRIVATE KEY-----\n"
-  //   const VIEW_IDV4 = "352577750"
-  //   const API_KEYV4 = "AIzaSyARCgWSFd6X4AgjlfNwgPUmGdBeanVGIK4"
-  //   let data = {
-  //     "metrics": [
-  //       {
-  //         "name": "activeUsers"
-  //       }
-  //     ]
-  //   }
-  //   let x = 0;
-  //   const requestOptionsPost = {
-  //     method: "POST",
-  //     headers: { Authorization: `Bearer ${analyticstoken.access_token}`, "Content-Type": "application/json" },
-  //     body: JSON.stringify(data),
-
-  //   };
-  //   const result = await fetch(`https://analyticsdata.googleapis.com/v1beta/properties/${VIEW_IDV4}:runRealtimeReport?key=${API_KEYV4}`, requestOptionsPost)
-  //     .then((response) => response.json())
-  //     .then((res) => {
-  //       return res
-  //     });
-  //   console.log("Result:: ", result)
-  //   let ans = Object.keys(result).find(key => key === 'rows') ? true : false;
-  //   // let test = result.data.rows !== null || result.data.rows !== undefined ? true : false;
-  //   console.log("Ans:: ", ans)
-  //   if (ans) {
-  //     x = result.rows[0].metricValues[0].value
-  //     console.log('Have::', x)
-  //     setCountUser(x)
-
-  //   } else {
-  //     x = 0;
-  //     console.log('DontHave::', x)
-  //     setCountUser(x)
-
-
-  //   }
-
-  // }
-  // console.log('CountUser::', countUser)
-
-  //API//
-
 
   const onChangeDate = (date, dateString) => {
     setStatusSelect(true);
@@ -123,15 +62,19 @@ const HomePage = () => {
   //   console.log(dateString);
   // };
 
-  const loadDataChart = () => {
+  const loadDataChart = (ansans) => {
     var options = {
       chart: {
         height: '350px',
         type: 'bar'
       },
       series: [{
-        name: 'sales',
-        data: [30, 40, 45, 50, 49, 60, 70, 91, 125, 105, 95, 75]
+        name: 'Total Visitors',
+        data: ansans.total
+      },
+      {
+        name: 'New Visitors',
+        data: ansans.new
       }],
       xaxis: {
         categories: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
@@ -148,6 +91,7 @@ const HomePage = () => {
         setCountUser(res.rows[0].metricValues[0].value)
       } else {
         setCountUser(0)
+
       }
     })
   }
@@ -156,11 +100,101 @@ const HomePage = () => {
       const ans = Object.keys(res).find(key => key === 'rows') ? true : false;
       if (ans) {
         setTotalUser(res.rows[0].metricValues[0].value)
+        setSession(res.rows[0].metricValues[1].value)
+
       } else {
         setTotalUser(0)
+        setSession(0)
+
       }
     })
 
+  }
+  const getDataAnalyticsChart = (year) => {
+
+    getDataChart(year).then((res) => {
+      console.log('RES::', res)
+      console.log('RES1::', res[0].rows) //arr 3 JAN FEB MAR
+      console.log('RES2::', res[1].rows) //arr 3 APR MAY JUN
+      console.log('RES3::', res[2].rows) //arr 3 JUL AUG SEPT
+      console.log('RES4::', res[3].rows) //arr 3 OCT NOV DEC
+      const month = [
+        { name: "JAN", new: 0, total: 0 }, { name: "Feb", new: 0, total: 0 }, { name: "Mar", new: 0, total: 0 }, { name: "Apr", new: 0, total: 0 }, { name: "May", new: 0, total: 0 }, { name: "Jun", new: 0, total: 0 },
+        { name: "Jul", new: 0, total: 0 }, { name: "Aug", new: 0, total: 0 }, { name: "Sept", new: 0, total: 0 }, { name: "Oct", new: 0, total: 0 }, { name: "Nov", new: 0, total: 0 }, { name: "Dec", new: 0, total: 0 }];
+      const conditions = Object.keys(res[0]).find(key => key === 'rows') ? true : false;
+      console.log('conditions::', conditions)
+      if (conditions) {
+        const ans = res.flatMap((item) => item.rows).reduce((result, item) => {
+          const monthName = item.dimensionValues[0].value
+          // console.log('Item::', monthName)
+          // console.log(result)
+          const findindex = result.findIndex((m) => m.name.toUpperCase() === monthName)
+          // console.log('findIndex:', findindex)
+          // console.log('item::', item)
+          result[findindex].total = Number(item.metricValues[0].value)
+          result[findindex].new = Number(item.metricValues[1].value)
+
+          return result
+
+        }, month)
+
+        const ansnew = ans.flatMap((item) => item.new)
+        const anstotal = ans.flatMap((item) => item.total)
+        const ansans = {
+          new: ansnew,
+          total: anstotal
+        }
+        loadDataChart(ansans)
+
+      } else {
+        const ansnew = month.flatMap((item) => item.new)
+        const anstotal = month.flatMap((item) => item.total)
+        console.log('Elseansnew::', ansnew)
+        console.log('Elseanstotal::', anstotal)
+
+        const ansans = {
+          new: ansnew,
+          total: anstotal
+        }
+        loadDataChart(ansans)
+
+
+      }
+
+
+      // const ansans = {
+      //   new: ansnew,
+      //   total: anstotal
+      // }
+      // // setChartNew(ansnum)
+      // // setChartTotal(anstotal)
+      // var options = {
+      //   chart: {
+      //     height: '350px',
+      //     type: 'bar'
+      //   },
+      //   series: [{
+      //     name: 'Total Visitors',
+      //     data: anstotal
+      //   },
+      //   {
+      //     name: 'New Visitors',
+      //     data: ansnew
+      //   }],
+      //   xaxis: {
+      //     categories: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+      //   }
+      // }
+
+      // var chart = new ApexCharts(document.querySelector("#chart"), options);
+      // chart.render();
+
+
+
+
+    }).catch((err) => {
+      console.log('ERROR:', err)
+    })
   }
 
 
@@ -170,9 +204,13 @@ const HomePage = () => {
   }, 50000)
 
   useEffect(() => {
-    loadDataChart()
+    const date = new Date();
+    let year = date.getFullYear();
+    console.log('defaultyear::', typeof (year))
+    getDataAnalyticsChart(year)
     loadData()
     getDataAnalyticsTotals()
+
 
   }, [])
   const onFinish = (values) => {
@@ -198,17 +236,26 @@ const HomePage = () => {
       const ans = Object.keys(res).find(key => key === 'rows') ? true : false;
       if (ans) {
         setTotalUser(res.rows[0].metricValues[0].value)
+        setSession(res.rows[0].metricValues[1].value)
         setStatusSelect(true)
 
       } else {
         setTotalUser(0)
         setStatusSelect(true)
+        setSession(0)
+
 
       }
     })
   };
+  const onFinishChart = (values) => {
+    let Yearchoose = values.year.format('YYYY')
+    console.log('selectyear::', Yearchoose)
+
+    getDataAnalyticsChart(Number(Yearchoose))
+
+  };
   const disabledDate = (current) => {
-    // Can not select days before today and today
     const day = new Date()
     day.setDate(day.getDate() - 1)
 
@@ -284,7 +331,9 @@ const HomePage = () => {
                 // className=" w-full rounded bg-gray text-white hover:bg-gray-300"
                 onClick={() => {
                   form.resetFields();
-                  getDataAnalyticsTotals()
+                  const date = new Date();
+                  let year = date.getFullYear();
+                  getDataAnalyticsChart(year)
                   setStatusSelect(false)
 
                 }}
@@ -415,7 +464,7 @@ const HomePage = () => {
                 <ClockCircleOutlined style={{ fontSize: '60px', color: 'white' }} />
                 <h1 style={{
                   color: 'white',
-                }}>{totalUser}</h1>
+                }}>{session}</h1>
                 <p style={{
                   color: 'white',
                 }}></p>
@@ -453,7 +502,7 @@ const HomePage = () => {
         </div>
         <div className='col-graph'>
           <div className='graph-bar02'>
-            <Space direction="horizontal" style={{ justifyContent: 'end', marginTop: '60px', marginRight: '60px', marginBottom: '30px' }}>
+            {/* <Space direction="horizontal" style={{ justifyContent: 'end', marginTop: '60px', marginRight: '60px', marginBottom: '30px' }}>
               <Select value={type} onChange={setType}>
                 <Option value="date">Date</Option>
                 <Option value="week">Week</Option>
@@ -461,12 +510,87 @@ const HomePage = () => {
                 <Option value="year">Year</Option>
               </Select>
               <PickerWithType type={type} onChange={(value) => console.log(value)} />
-            </Space>
+              <DatePicker picker="year" disabledDate={disabledDate} />
+            </Space> */}
+            <div className='col-select-chart'>
+
+              <Form
+                name="basic"
+                labelCol={{
+                  span: 8,
+                }}
+                wrapperCol={{
+                  span: 16,
+                }}
+                style={{
+                  maxWidth: 1000,
+                }}
+                initialValues={{
+                  remember: true,
+                }}
+                layout='inline'
+                form={form}
+                onFinish={onFinishChart}>
+                <Form.Item
+                  className="font-bold"
+                  label="Filter :"
+                  name="year"
+                >
+                  <DatePicker
+                    picker="year"
+                    disabledDate={disabledDate}
+                    style={{
+                      borderRadius: "5px",
+                    }}
+                    placeholder={["Year"]}
+                  />
+                </Form.Item>
+
+                <Form.Item className="">
+                  <Button
+                    type="text"
+                    // className='button-search'
+                    // danger
+                    // className=" w-full rounded bg-danger text-white hover:bg-red-300"
+                    style={{
+                      borderRadius: "10px",
+                      backgroundColor: "#0ea5e9",
+                      color: "white"
+                    }}
+                    onClick={() => {
+                      form.submit();
+                    }}
+                  >
+                    Search
+                  </Button>
+                </Form.Item>
+                <Form.Item className="">
+                  <Button
+                    type="text"
+                    style={{
+                      borderRadius: "10px",
+                      backgroundColor: "#ef4444",
+                      color: "white"
+                    }}
+                    // className='button-cancel'
+                    // className=" w-full rounded bg-gray text-white hover:bg-gray-300"
+                    onClick={() => {
+                      form.resetFields();
+                      getDataAnalyticsChart()
+                      setStatusChart(false)
+
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                </Form.Item>
+              </Form>
+            </div>
 
 
             {/* Graph Bar */}
             <div id="chart"></div>
-            <div style={{ width: '100%', textAlign: 'center', marginBottom: '30px' }}>สถิติโครงการยอดนิยมในเเต่ละ วัน/ สัปดาห์/ เดือน/ ปี</div>
+            <div style={{ width: '100%', textAlign: 'center' }}>Website visitor statistics for each month</div>
 
 
 
