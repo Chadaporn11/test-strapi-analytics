@@ -8,7 +8,7 @@ export const AuthGoogle = async () => {
         method: "GET",
         headers: { Authorization: `Bearer ${JSON.parse(sessionStorage.getItem("jwtToken"))}`, "Content-Type": "application/json" },
     };
-    const analyticstoken = await fetch(`http://localhost:1337/analyticsapis/token`, requestOptions)
+    const analyticstoken = fetch(`http://localhost:1337/analyticsapis/token`, requestOptions)
         .then((response) => response.json())
         .then((res) => {
             return res
@@ -33,7 +33,7 @@ export const getAnalyticsRealTime = async () => {
         body: JSON.stringify(data),
 
     };
-    const result = await fetch(`https://analyticsdata.googleapis.com/v1beta/properties/${VIEW_IDV4}:runRealtimeReport?key=${API_KEYV4}`, requestOptionsPost)
+    const result = fetch(`https://analyticsdata.googleapis.com/v1beta/properties/${VIEW_IDV4}:runRealtimeReport?key=${API_KEYV4}`, requestOptionsPost)
         .then((response) => response.json())
         .then((res) => {
             return res
@@ -68,7 +68,7 @@ export const getAnalyticsTotal = async () => {
         body: JSON.stringify(data),
 
     };
-    const result = await fetch(`https://analyticsdata.googleapis.com/v1beta/properties/${VIEW_IDV4}:runReport?key=${API_KEYV4}`, requestOptions)
+    const result = fetch(`https://analyticsdata.googleapis.com/v1beta/properties/${VIEW_IDV4}:runReport?key=${API_KEYV4}`, requestOptions)
         .then((response) => response.json())
         .then((res) => {
             return res
@@ -102,7 +102,7 @@ export const getTotal = async (startDate, endDate) => {
         body: JSON.stringify(data),
 
     };
-    const result = await fetch(`https://analyticsdata.googleapis.com/v1beta/properties/${VIEW_IDV4}:runReport?key=${API_KEYV4}`, requestOptions)
+    const result = fetch(`https://analyticsdata.googleapis.com/v1beta/properties/${VIEW_IDV4}:runReport?key=${API_KEYV4}`, requestOptions)
         .then((response) => response.json())
         .then((res) => {
             return res
@@ -129,18 +129,18 @@ export const getDataChart = async (year) => {
         "dateRanges": [
             {
                 "name": "JAN",
-                "startDate": `${year}-02-01`,
-                "endDate": `${year}-02-07`
+                "startDate": `${year}-01-01`,
+                "endDate": `${year}-01-31`
             },
             {
                 "name": "FEB",
-                "startDate": `${year}-02-07`,
-                "endDate": `${year}-02-08`
+                "startDate": `${year}-02-01`,
+                "endDate": `${year}-02-28`
             },
             {
                 "name": "MAR",
-                "startDate": `${year}-02-08`,
-                "endDate": `${year}-02-09`
+                "startDate": `${year}-03-01`,
+                "endDate": `${year}-03-31`
             },
         ]
     }
@@ -156,18 +156,18 @@ export const getDataChart = async (year) => {
         "dateRanges": [
             {
                 "name": "APR",
-                "startDate": `${year}-02-10`,
-                "endDate": `${year}-02-11`
+                "startDate": `${year}-04-01`,
+                "endDate": `${year}-04-30`
             },
             {
                 "name": "MAY",
-                "startDate": `${year}-02-11`,
-                "endDate": `${year}-02-12`
+                "startDate": `${year}-05-01`,
+                "endDate": `${year}-05-31`
             },
             {
                 "name": "JUN",
-                "startDate": `${year}-02-12`,
-                "endDate": `${year}-02-13`
+                "startDate": `${year}-06-01`,
+                "endDate": `${year}-06-30`
             },
         ]
     }
@@ -183,18 +183,18 @@ export const getDataChart = async (year) => {
         "dateRanges": [
             {
                 "name": "JUL",
-                "startDate": `${year}-02-01`,
-                "endDate": `${year}-02-07`
+                "startDate": `${year}-07-01`,
+                "endDate": `${year}-07-31`
             },
             {
                 "name": "AUG",
-                "startDate": `${year}-02-07`,
-                "endDate": `${year}-02-08`
+                "startDate": `${year}-08-01`,
+                "endDate": `${year}-08-31`
             },
             {
                 "name": "SEPT",
-                "startDate": `${year}-02-08`,
-                "endDate": `${year}-02-09`
+                "startDate": `${year}-09-01`,
+                "endDate": `${year}-09-30`
             },
         ]
     }
@@ -210,18 +210,18 @@ export const getDataChart = async (year) => {
         "dateRanges": [
             {
                 "name": "OCT",
-                "startDate": `${year}-02-10`,
-                "endDate": `${year}-02-11`
+                "startDate": `${year}-10-01`,
+                "endDate": `${year}-10-31`
             },
             {
                 "name": "NOV",
-                "startDate": `${year}-02-11`,
-                "endDate": `${year}-02-12`
+                "startDate": `${year}-11-01`,
+                "endDate": `${year}-11-30`
             },
             {
                 "name": "DEC",
-                "startDate": `${year}-02-12`,
-                "endDate": `${year}-02-13`
+                "startDate": `${year}-12-01`,
+                "endDate": `${year}-12-31`
             },
         ]
     }
@@ -251,22 +251,22 @@ export const getDataChart = async (year) => {
 
     };
 
-    let quarter01 = await fetch(`https://analyticsdata.googleapis.com/v1beta/properties/${VIEW_IDV4}:runReport?key=${API_KEYV4}`, requestOptions1)
+    let quarter01 = fetch(`https://analyticsdata.googleapis.com/v1beta/properties/${VIEW_IDV4}:runReport?key=${API_KEYV4}`, requestOptions1)
         .then((response) => response.json())
         .then((res) => {
             return res
         });
-    let quarter02 = await fetch(`https://analyticsdata.googleapis.com/v1beta/properties/${VIEW_IDV4}:runReport?key=${API_KEYV4}`, requestOptions2)
+    let quarter02 = fetch(`https://analyticsdata.googleapis.com/v1beta/properties/${VIEW_IDV4}:runReport?key=${API_KEYV4}`, requestOptions2)
         .then((response) => response.json())
         .then((res) => {
             return res
         });
-    let quarter03 = await fetch(`https://analyticsdata.googleapis.com/v1beta/properties/${VIEW_IDV4}:runReport?key=${API_KEYV4}`, requestOptions3)
+    let quarter03 = fetch(`https://analyticsdata.googleapis.com/v1beta/properties/${VIEW_IDV4}:runReport?key=${API_KEYV4}`, requestOptions3)
         .then((response) => response.json())
         .then((res) => {
             return res
         });
-    let quarter04 = await fetch(`https://analyticsdata.googleapis.com/v1beta/properties/${VIEW_IDV4}:runReport?key=${API_KEYV4}`, requestOptions4)
+    let quarter04 = fetch(`https://analyticsdata.googleapis.com/v1beta/properties/${VIEW_IDV4}:runReport?key=${API_KEYV4}`, requestOptions4)
         .then((response) => response.json())
         .then((res) => {
             return res
