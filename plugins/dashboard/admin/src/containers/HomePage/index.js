@@ -5,85 +5,60 @@
  */
 
 import React, { memo, useState, useEffect } from 'react';
-// import PropTypes from 'prop-types';
 import pluginId from '../../pluginId';
-// import '../../index.css';
 import './index.css';
-// import { testGoogleAuth } from '../../controllers/analytics'
-// import '../../styles.css';
 
-// import '../node_modules/react-vis/dist/style.css';
-// import '../../../../../../node_modules/react-vis/dist/style.css';
-// import { XYPlot, LineSeries } from 'react-vis';
-// import { Data } from "../../utils/Data";
-// import Chart from "chart.js/auto";
-// import { Pie } from "react-chartjs-2";
-import ApexCharts from 'apexcharts'
-import { Card, DatePicker, TimePicker, Space, Select, Form, Button } from 'antd';
-import { TeamOutlined, ClockCircleOutlined } from '@ant-design/icons';
-const { Option } = Select;
-const PickerWithType = ({ type, onChange }) => {
-  // if (type === 'time') return <TimePicker onChange={onChange} />;
-  if (type === 'date') return <DatePicker onChange={onChange} />;
-  return <DatePicker picker={type} onChange={onChange} />;
-};
+//functions
 import { getAnalyticsRealTime, getAnalyticsTotal, getTotal, getDataChart } from './function/analyticsapi'
+//Chart
+import ApexCharts from 'apexcharts'
+
+//ant design
+import { TeamOutlined, ClockCircleOutlined } from '@ant-design/icons';
+import { Card, DatePicker, Form, Button, Spin } from 'antd';
+
 
 
 
 const HomePage = () => {
 
   const [form] = Form.useForm()
+  const [formchart] = Form.useForm()
+
   const [statusSelect, setStatusSelect] = useState(false)
   const [statusChart, setStatusChart] = useState(false)
-
-  const [dataSelect, setDataSelect] = useState('')
-  const [type, setType] = useState('date');
-  // const [token, setToken] = useState('')
   const [countUser, setCountUser] = useState(0)
   const [totalUser, setTotalUser] = useState(0)
   const [chartnew, setChartNew] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
   const [charttotal, setChartTotal] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
   const [session, setSession] = useState(0)
   const [startDate, setStartDate] = useState('')
-  const [endDate, setEndDate] = useState('')
 
-  const onChangeDate = (date, dateString) => {
-    setStatusSelect(true);
-    setDataSelect(dateString);
-    console.log(date, dateString);
-  };
-  const onChangeMonth = (date, dateString) => {
-    setStatusSelect(true);
-    setDataSelect(dateString);
-    console.log(date, dateString);
-  };
-  // const onChange = (date, dateString) => {
-  //   console.log(dateString);
-  // };
-
-  const loadDataChart = (ansans) => {
-    var options = {
-      chart: {
-        height: '350px',
-        type: 'bar'
-      },
-      series: [{
-        name: 'Total Visitors',
-        data: ansans.total
-      },
-      {
-        name: 'New Visitors',
-        data: ansans.new
-      }],
-      xaxis: {
-        categories: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-      }
+  //Chart Bar//
+  // const loadDataChart = (ansans) => {
+  var options = {
+    chart: {
+      id: 'chart',
+      height: '350px',
+      type: 'bar'
+    },
+    series: [{
+      name: 'Total Visitors',
+      data: charttotal
+    },
+    {
+      name: 'New Visitors',
+      data: chartnew
+    }],
+    xaxis: {
+      categories: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     }
-
-    var chart = new ApexCharts(document.querySelector("#chart"), options);
-    chart.render();
   }
+
+  // }
+  //Chart Bar//
+
+  //GetData Realtimes//
   const loadData = () => {
     getAnalyticsRealTime().then((res) => {
       const ans = Object.keys(res).find(key => key === 'rows') ? true : false;
@@ -95,6 +70,9 @@ const HomePage = () => {
       }
     })
   }
+  //GetData Realtimes//
+
+  //GetData ReportUser Total//
   const getDataAnalyticsTotals = () => {
     getAnalyticsTotal().then((res) => {
       const ans = Object.keys(res).find(key => key === 'rows') ? true : false;
@@ -110,6 +88,9 @@ const HomePage = () => {
     })
 
   }
+  //GetData ReportUser Total//
+
+  //GetData Chart//
   const getDataAnalyticsChart = (year) => {
 
     getDataChart(year).then((res) => {
@@ -122,17 +103,21 @@ const HomePage = () => {
         { name: "JAN", new: 0, total: 0 }, { name: "Feb", new: 0, total: 0 }, { name: "Mar", new: 0, total: 0 }, { name: "Apr", new: 0, total: 0 }, { name: "May", new: 0, total: 0 }, { name: "Jun", new: 0, total: 0 },
         { name: "Jul", new: 0, total: 0 }, { name: "Aug", new: 0, total: 0 }, { name: "Sept", new: 0, total: 0 }, { name: "Oct", new: 0, total: 0 }, { name: "Nov", new: 0, total: 0 }, { name: "Dec", new: 0, total: 0 }];
       const conditions = Object.keys(res[0]).find(key => key === 'rows') ? true : false;
-      console.log('conditions::', conditions)
+      console.log('Conditions:', conditions)
       if (conditions) {
         const ans = res.flatMap((item) => item.rows).reduce((result, item) => {
-          const monthName = item.dimensionValues[0].value
-          // console.log('Item::', monthName)
-          // console.log(result)
-          const findindex = result.findIndex((m) => m.name.toUpperCase() === monthName)
-          // console.log('findIndex:', findindex)
-          // console.log('item::', item)
-          result[findindex].total = Number(item.metricValues[0].value)
-          result[findindex].new = Number(item.metricValues[1].value)
+          if (item !== undefined) {
+            const monthName = item.dimensionValues[0].value
+            console.log('Item::', monthName)
+            // console.log(result)
+            const findindex = result.findIndex((m) => m.name.toUpperCase() === monthName)
+            // console.log('findIndex:', findindex)
+            // console.log('item::', item)
+            result[findindex].total = Number(item.metricValues[0].value)
+            result[findindex].new = Number(item.metricValues[1].value)
+
+          }
+
 
           return result
 
@@ -140,63 +125,144 @@ const HomePage = () => {
 
         const ansnew = ans.flatMap((item) => item.new)
         const anstotal = ans.flatMap((item) => item.total)
+        console.log('ansnew::', ansnew)
+        console.log('anstotal::', anstotal)
         const ansans = {
           new: ansnew,
           total: anstotal
         }
-        loadDataChart(ansans)
+        ApexCharts.exec('chart', "updateSeries", [{
+          name: 'Total Visitors',
+          data: anstotal
+        }, {
+          name: 'Total Visitors',
+          data: ansnew
+        }
+        ]);
+        // loadDataChart(ansans)
+        setStatusChart(false)
+
+
+
 
       } else {
         const ansnew = month.flatMap((item) => item.new)
         const anstotal = month.flatMap((item) => item.total)
         console.log('Elseansnew::', ansnew)
         console.log('Elseanstotal::', anstotal)
-
         const ansans = {
           new: ansnew,
           total: anstotal
         }
-        loadDataChart(ansans)
+        // loadDataChart(ansans)
+        ApexCharts.exec('chart', "updateSeries", [{
+          name: 'Total Visitors',
+          data: anstotal
+        }, {
+          name: 'Total Visitors',
+          data: ansnew
+        }
+        ]);
+        setStatusChart(false)
+
+
 
 
       }
 
-
-      // const ansans = {
-      //   new: ansnew,
-      //   total: anstotal
-      // }
-      // // setChartNew(ansnum)
-      // // setChartTotal(anstotal)
-      // var options = {
-      //   chart: {
-      //     height: '350px',
-      //     type: 'bar'
-      //   },
-      //   series: [{
-      //     name: 'Total Visitors',
-      //     data: anstotal
-      //   },
-      //   {
-      //     name: 'New Visitors',
-      //     data: ansnew
-      //   }],
-      //   xaxis: {
-      //     categories: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-      //   }
-      // }
-
-      // var chart = new ApexCharts(document.querySelector("#chart"), options);
-      // chart.render();
-
-
-
-
     }).catch((err) => {
+      setStatusChart(false)
       console.log('ERROR:', err)
     })
   }
+  //GetData Chart//
 
+  //function Chart//
+  const getDataSelectChart = (year) => {
+
+    getDataChart(year).then((res) => {
+      const month = [
+        { name: "JAN", new: 0, total: 0 }, { name: "Feb", new: 0, total: 0 }, { name: "Mar", new: 0, total: 0 }, { name: "Apr", new: 0, total: 0 }, { name: "May", new: 0, total: 0 }, { name: "Jun", new: 0, total: 0 },
+        { name: "Jul", new: 0, total: 0 }, { name: "Aug", new: 0, total: 0 }, { name: "Sept", new: 0, total: 0 }, { name: "Oct", new: 0, total: 0 }, { name: "Nov", new: 0, total: 0 }, { name: "Dec", new: 0, total: 0 }];
+      const conditions = Object.keys(res[0]).find(key => key === 'rows') ? true : false;
+      console.log('Conditions:', conditions)
+      if (conditions) {
+        const ans = res.flatMap((item) => item.rows).reduce((result, item) => {
+          if (item !== undefined) {
+            const monthName = item.dimensionValues[0].value
+            // console.log('Item::', monthName)
+            // console.log(result)
+            const findindex = result.findIndex((m) => m.name.toUpperCase() === monthName)
+            // console.log('findIndex:', findindex)
+            // console.log('item::', item)
+            result[findindex].total = Number(item.metricValues[0].value)
+            result[findindex].new = Number(item.metricValues[1].value)
+
+          }
+
+
+          return result
+
+
+        }, month)
+
+        const ansnew = ans.flatMap((item) => item.new)
+        const anstotal = ans.flatMap((item) => item.total)
+        console.log('selectansnew::', ansnew)
+        console.log('selectanstotal::', anstotal)
+        // chart.updateSeries([{
+        //   name: 'Total Visitors',
+        //   data: anstotal
+        // }]);
+        // chart.updateSeries([{
+        //   name: 'New Visitors',
+        //   data: ansnew
+        // }]);
+        ApexCharts.exec('chart', "updateSeries", [{
+          name: 'Total Visitors',
+          data: anstotal
+        }, {
+          name: 'Total Visitors',
+          data: ansnew
+        }
+        ]);
+        setStatusChart(false)
+
+
+
+      } else {
+        const ansnew = month.flatMap((item) => item.new)
+        const anstotal = month.flatMap((item) => item.total)
+        console.log('Elseansnew::', ansnew)
+        console.log('Elseanstotal::', anstotal)
+        // chart.updateSeries([{
+        //   name: 'Total Visitors',
+        //   data: anstotal
+        // }]);
+        // chart.updateSeries([{
+        //   name: 'New Visitors',
+        //   data: ansnew
+        // }]);
+        ApexCharts.exec('chart', "updateSeries", [{
+          name: 'Total Visitors',
+          data: anstotal
+        }, {
+          name: 'Total Visitors',
+          data: ansnew
+        }
+        ]);
+        setStatusChart(false)
+
+
+
+
+      }
+    }).catch((err) => {
+      setStatusChart(false)
+      console.log('ERROR:', err)
+    })
+  }
+  //function Chart//
 
   setInterval(() => {
     loadData()
@@ -211,13 +277,20 @@ const HomePage = () => {
     loadData()
     getDataAnalyticsTotals()
 
+    var chart = new ApexCharts(document.querySelector("#chart"), options);
+    chart.render();
+
 
   }, [])
-  const onFinish = (values) => {
+
+  //Search User&Sessions//
+  const onFinishSearch = (values) => {
     // console.log('onFinish', `${new Date(values.date[0]).toISOString().substring(0, 10)}`)
     // let startDate = new Date(values.date[0]).toISOString().substring(0, 10)
     // let endDate = new Date(values.date[1]).toISOString().substring(0, 10)
     let Datechoose = values.date.format('YYYY-MM')
+    console.log('values:::', Datechoose)
+
     // let endDatechoose = values.date[1].format('YYYY-MM')
     const date = new Date();
     let day = date.getDate();
@@ -231,7 +304,7 @@ const HomePage = () => {
     // let month = values.date.getMonth() + 1;
     // let year = values.date.getFullYear();
     setStartDate(`${month[new Date(Datechoose).getMonth()]} ${new Date(Datechoose).getFullYear().toString()}`)
-    setEndDate(endDatechoose)
+    // setEndDate(endDatechoose)
     getTotal(startDatechoose, endDatechoose).then((res) => {
       const ans = Object.keys(res).find(key => key === 'rows') ? true : false;
       if (ans) {
@@ -248,13 +321,19 @@ const HomePage = () => {
       }
     })
   };
+  //Search User&Sessions//
+
+  //Search Chart//
   const onFinishChart = (values) => {
+    console.log('test', values)
     let Yearchoose = values.year.format('YYYY')
     console.log('selectyear::', Yearchoose)
 
-    getDataAnalyticsChart(Number(Yearchoose))
+    getDataSelectChart(Number(Yearchoose))
 
   };
+  //Search Chart//
+
   const disabledDate = (current) => {
     const day = new Date()
     day.setDate(day.getDate() - 1)
@@ -285,7 +364,8 @@ const HomePage = () => {
             }}
             layout='inline'
             form={form}
-            onFinish={onFinish}>
+            onFinish={onFinishSearch}
+          >
             <Form.Item
               className="font-bold"
               label="Filter :"
@@ -331,9 +411,6 @@ const HomePage = () => {
                 // className=" w-full rounded bg-gray text-white hover:bg-gray-300"
                 onClick={() => {
                   form.resetFields();
-                  const date = new Date();
-                  let year = date.getFullYear();
-                  getDataAnalyticsChart(year)
                   setStatusSelect(false)
 
                 }}
@@ -513,6 +590,9 @@ const HomePage = () => {
               <DatePicker picker="year" disabledDate={disabledDate} />
             </Space> */}
             <div className='col-select-chart'>
+              {statusChart && (
+                <Spin />
+              )}
 
               <Form
                 name="basic"
@@ -529,7 +609,7 @@ const HomePage = () => {
                   remember: true,
                 }}
                 layout='inline'
-                form={form}
+                form={formchart}
                 onFinish={onFinishChart}>
                 <Form.Item
                   className="font-bold"
@@ -558,7 +638,9 @@ const HomePage = () => {
                       color: "white"
                     }}
                     onClick={() => {
-                      form.submit();
+                      formchart.submit();
+                      setStatusChart(true)
+
                     }}
                   >
                     Search
@@ -575,9 +657,11 @@ const HomePage = () => {
                     // className='button-cancel'
                     // className=" w-full rounded bg-gray text-white hover:bg-gray-300"
                     onClick={() => {
-                      form.resetFields();
-                      getDataAnalyticsChart()
-                      setStatusChart(false)
+                      formchart.resetFields();
+                      const date = new Date();
+                      let year = date.getFullYear();
+                      getDataSelectChart(year)
+                      setStatusChart(true)
 
                     }}
                   >
@@ -589,7 +673,13 @@ const HomePage = () => {
 
 
             {/* Graph Bar */}
+
             <div id="chart"></div>
+
+            {/* <BarChart
+              chartnew={chartnew}
+              charttotal={charttotal}
+            /> */}
             <div style={{ width: '100%', textAlign: 'center' }}>Website visitor statistics for each month</div>
 
 
