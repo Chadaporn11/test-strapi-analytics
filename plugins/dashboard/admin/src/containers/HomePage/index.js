@@ -14,18 +14,18 @@ import { getAnalyticsRealTime, getAnalyticsTotal, getTotal, getDataChart } from 
 import ApexCharts from 'apexcharts'
 
 //ant design
-import { TeamOutlined, ClockCircleOutlined } from '@ant-design/icons';
+import { TeamOutlined, ClockCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import { Card, DatePicker, Form, Button, Spin } from 'antd';
 
 
-
-
 const HomePage = () => {
+
 
   const [form] = Form.useForm()
   const [formchart] = Form.useForm()
 
   const [statusSelect, setStatusSelect] = useState(false)
+  const [statusDate, setStatusDate] = useState(false)
   const [statusChart, setStatusChart] = useState(false)
   const [countUser, setCountUser] = useState(0)
   const [totalUser, setTotalUser] = useState(0)
@@ -79,10 +79,14 @@ const HomePage = () => {
       if (ans) {
         setTotalUser(res.rows[0].metricValues[0].value)
         setSession(res.rows[0].metricValues[1].value)
+        setStatusSelect(false)
+
 
       } else {
         setTotalUser(0)
         setSession(0)
+        setStatusSelect(false)
+
 
       }
     })
@@ -159,7 +163,7 @@ const HomePage = () => {
           name: 'Total Visitors',
           data: anstotal
         }, {
-          name: 'Total Visitors',
+          name: 'New Visitors',
           data: ansnew
         }
         ]);
@@ -210,19 +214,11 @@ const HomePage = () => {
         const anstotal = ans.flatMap((item) => item.total)
         console.log('selectansnew::', ansnew)
         console.log('selectanstotal::', anstotal)
-        // chart.updateSeries([{
-        //   name: 'Total Visitors',
-        //   data: anstotal
-        // }]);
-        // chart.updateSeries([{
-        //   name: 'New Visitors',
-        //   data: ansnew
-        // }]);
         ApexCharts.exec('chart', "updateSeries", [{
           name: 'Total Visitors',
           data: anstotal
         }, {
-          name: 'Total Visitors',
+          name: 'New Visitors',
           data: ansnew
         }
         ]);
@@ -235,19 +231,11 @@ const HomePage = () => {
         const anstotal = month.flatMap((item) => item.total)
         console.log('Elseansnew::', ansnew)
         console.log('Elseanstotal::', anstotal)
-        // chart.updateSeries([{
-        //   name: 'Total Visitors',
-        //   data: anstotal
-        // }]);
-        // chart.updateSeries([{
-        //   name: 'New Visitors',
-        //   data: ansnew
-        // }]);
         ApexCharts.exec('chart', "updateSeries", [{
           name: 'Total Visitors',
           data: anstotal
         }, {
-          name: 'Total Visitors',
+          name: 'New Visitors',
           data: ansnew
         }
         ]);
@@ -267,7 +255,7 @@ const HomePage = () => {
   setInterval(() => {
     loadData()
 
-  }, 50000)
+  }, 300000)
 
   useEffect(() => {
     const date = new Date();
@@ -310,11 +298,11 @@ const HomePage = () => {
       if (ans) {
         setTotalUser(res.rows[0].metricValues[0].value)
         setSession(res.rows[0].metricValues[1].value)
-        setStatusSelect(true)
+        setStatusSelect(false)
 
       } else {
         setTotalUser(0)
-        setStatusSelect(true)
+        setStatusSelect(false)
         setSession(0)
 
 
@@ -348,6 +336,9 @@ const HomePage = () => {
       </div>
       <div className='Dashboard-container'>
         <div className='col-select'>
+          {statusSelect && (
+            <Spin />
+          )}
           <Form
             name="basic"
             labelCol={{
@@ -368,7 +359,7 @@ const HomePage = () => {
           >
             <Form.Item
               className="font-bold"
-              label="Filter :"
+              label='Search :'
               name="date"
             >
               <DatePicker
@@ -394,6 +385,9 @@ const HomePage = () => {
                 }}
                 onClick={() => {
                   form.submit();
+                  setStatusSelect(true)
+                  setStatusDate(true)
+
                 }}
               >
                 Search
@@ -411,7 +405,9 @@ const HomePage = () => {
                 // className=" w-full rounded bg-gray text-white hover:bg-gray-300"
                 onClick={() => {
                   form.resetFields();
-                  setStatusSelect(false)
+                  setStatusSelect(true)
+                  setStatusDate(false)
+                  getDataAnalyticsTotals()
 
                 }}
               >
@@ -513,8 +509,8 @@ const HomePage = () => {
                 color: 'white',
                 marginTop: '25px',
               }} >
-                {statusSelect && (`${startDate}`)}
-                {!statusSelect && ('Current year & month')}
+                {statusDate && (`${startDate}`)}
+                {!statusDate && ('Current year & month')}
               </p>
             </div>
 
@@ -550,8 +546,8 @@ const HomePage = () => {
                 color: 'white',
                 marginTop: '25px',
               }} >
-                {statusSelect && (`${startDate}`)}
-                {!statusSelect && ('Current year & month')}
+                {statusDate && (`${startDate}`)}
+                {!statusDate && ('Current year & month')}
               </p>
             </div>
 
@@ -613,7 +609,7 @@ const HomePage = () => {
                 onFinish={onFinishChart}>
                 <Form.Item
                   className="font-bold"
-                  label="Filter :"
+                  label='Search :'
                   name="year"
                 >
                   <DatePicker
